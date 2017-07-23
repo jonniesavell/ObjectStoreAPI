@@ -3,6 +3,11 @@ package com.indigententerprises.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * this file will move to a less static design and adopt a dynamic (associative array) interface.
+ *
+ */
 public class FileMetaData {
 
     private final String name;
