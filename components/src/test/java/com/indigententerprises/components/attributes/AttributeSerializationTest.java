@@ -1,93 +1,100 @@
 package com.indigententerprises.components.attributes;
 
 import com.indigententerprises.components.MetaDataServiceImplementation;
-import org.apache.avro.Schema;
-import org.apache.avro.SchemaBuilder;
-import org.apache.avro.file.DataFileWriter;
-import org.apache.avro.generic.GenericDatumWriter;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.generic.GenericRecordBuilder;
-import org.apache.avro.io.DatumWriter;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
- * test the use of Avro without code generation
+ * test the meta-data service
  *
  * @author jonniesavel
  *
  */
 public class AttributeSerializationTest {
 
+    private File file;
+
+    @Before
+    public void before() throws IOException {
+
+        file = new File("metadata.avro");
+
+        if (file.exists()) {
+            FileChannel outChan = new FileOutputStream(file, false).getChannel();
+            outChan.truncate(0);
+            outChan.close();
+        } else {
+            // file doesn't exist => no need to do anything
+        }
+    }
+
+    @After
+    public void afterTest() throws IOException {
+
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     @Test
-    public void test() throws Exception {
+    public void testPopulateAttributes() throws Exception {
 
-        //
-        // object-metatdata service, initialization
-        //
-        // this is how you create the schema the first time
-        Schema ratingSchema = SchemaBuilder.record("Rating")
-                .fields()
-                .name("attributeName").type().stringType().noDefault()
-                .name("attributeType").type().stringType().noDefault()
-                .name("attributeValue").type().nullable().intType().noDefault()
-                .endRecord();
+        final MetaDataServiceImplementation systemUnderTest =
+                new MetaDataServiceImplementation();
+        final HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("pants", 5);
+        attributes.put("socks", 3);
 
-        //
-        // object-metatdata service, persist
-        //
-        // this is how you create a record without code generation
-        final GenericRecordBuilder recordBuilder1 =
-                new GenericRecordBuilder(ratingSchema)
-                        .set("attributeName", "pants")
-                        .set("attributeType", "Integer")
-                        .set("attributeValue", 5);
-
-        final GenericRecord attributeRecord1 = recordBuilder1.build();
-
-        final GenericRecordBuilder recordBuilder2 =
-                new GenericRecordBuilder(ratingSchema)
-                        .set("attributeName", "socks")
-                        .set("attributeType", "Integer")
-                        .set("attributeValue", null);
-
-        final GenericRecord attributeRecord2 = recordBuilder2.build();
-
-        //
-        // object-metatdata service, persist
-        //
-        // this is how you persist both the schema and a record
-        File file = new File("metadata.avro");
-        DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(ratingSchema);
-        DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+        final FileOutputStream outputStream = new FileOutputStream(file);
 
         try {
-            dataFileWriter.create(ratingSchema, file);
-            dataFileWriter.append(attributeRecord1);
-            dataFileWriter.append(attributeRecord2);
+            systemUnderTest.serializeMetaData(outputStream, attributes);
         } finally {
-            dataFileWriter.close();
+            outputStream.close();
         }
 
         final FileInputStream inputStream =
                 new FileInputStream(file);
-        final MetaDataServiceImplementation systemUnderTest =
-                new MetaDataServiceImplementation();
         final Map<String, Object> result =
                 systemUnderTest.deserializeMetaData(inputStream);
 
         Assert.assertNotNull(result);
-        Assert.assertTrue(result.size() > 0);
+        Assert.assertTrue(result.size() == 2);
+    }
 
-        for (final Map.Entry<String, Object> entry : result.entrySet()) {
-            System.out.println("(" + entry.getKey() + ", " + entry.getValue() + ")");
+    @Test
+    public void testPopulateNoAttributes() throws Exception {
+
+        final MetaDataServiceImplementation systemUnderTest =
+                new MetaDataServiceImplementation();
+        final Map<String, Object> attributes = Collections.emptyMap();
+        final FileOutputStream outputStream = new FileOutputStream(file);
+
+        try {
+            systemUnderTest.serializeMetaData(outputStream, attributes);
+        } finally {
+            outputStream.close();
         }
+
+        final FileInputStream inputStream =
+                new FileInputStream(file);
+        final Map<String, Object> result =
+                systemUnderTest.deserializeMetaData(inputStream);
+
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result.size() == 0);
     }
 }
