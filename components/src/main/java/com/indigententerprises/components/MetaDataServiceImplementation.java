@@ -24,6 +24,10 @@ import java.util.Map;
  */
 public class MetaDataServiceImplementation {
 
+    private static final String ATTRIBUTE_NAME = "attributeName";
+    private static final String ATTRIBUTE_TYPE = "attributeType";
+    private static final String ATTRIBUTE_VALUE = "attributeValue";
+
     /**
      * attributes must be non-null
      * outputStream must be non-null and must correspond to a live stream
@@ -38,9 +42,9 @@ public class MetaDataServiceImplementation {
 
         final Schema ratingSchema = SchemaBuilder.record("Attribute")
                 .fields()
-                .name("attributeName").type().stringType().noDefault()
-                .name("attributeType").type().stringType().noDefault()
-                .name("attributeValue").type().nullable().intType().noDefault()
+                .name(ATTRIBUTE_NAME).type().stringType().noDefault()
+                .name(ATTRIBUTE_TYPE).type().stringType().noDefault()
+                .name(ATTRIBUTE_VALUE).type().nullable().intType().noDefault()
                 .endRecord();
         final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(ratingSchema);
         final DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
@@ -51,9 +55,9 @@ public class MetaDataServiceImplementation {
             for (Map.Entry<String, Object> entry : attributes.entrySet()) {
                 final GenericRecordBuilder recordBuilder =
                         new GenericRecordBuilder(ratingSchema)
-                                .set("attributeName", entry.getKey())
-                                .set("attributeType", entry.getValue().getClass().getName())
-                                .set("attributeValue", entry.getValue());
+                                .set(ATTRIBUTE_NAME, entry.getKey())
+                                .set(ATTRIBUTE_TYPE, entry.getValue().getClass().getName())
+                                .set(ATTRIBUTE_VALUE, entry.getValue());
                 final GenericRecord attributeRecord = recordBuilder.build();
                 dataFileWriter.append(attributeRecord);
             }
@@ -88,8 +92,8 @@ public class MetaDataServiceImplementation {
             while (dataReader.hasNext()) {
 
                 final GenericRecord attributeData = dataReader.next();
-                final Utf8 utf8 = (Utf8) attributeData.get("attributeName");
-                result.put(utf8.toString(), attributeData.get("attributeValue"));
+                final Utf8 utf8 = (Utf8) attributeData.get(ATTRIBUTE_NAME);
+                result.put(utf8.toString(), attributeData.get(ATTRIBUTE_VALUE));
             }
 
             return result;
