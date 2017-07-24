@@ -32,9 +32,6 @@ public class MetaDataServiceImplementation {
      * attributes must be non-null
      * outputStream must be non-null and must correspond to a live stream
      *   that was truncated prior to invocation
-     * @param outputStream
-     * @param attributes
-     * @throws IOException
      */
     public void serializeMetaData(
             final OutputStream outputStream,
