@@ -30,6 +30,7 @@ import java.util.UUID;
 public class ObjectManipulationTest {
 
     private File file;
+    private int size;
 
     @Before
     public void before() throws IOException {
@@ -57,12 +58,16 @@ public class ObjectManipulationTest {
         final FileOutputStream fileOutputStream = new FileOutputStream(file, false);
 
         try {
-            int byteNumber = 0;
+            byte byteNumber = Byte.MIN_VALUE;
+            this.size = 0;
 
-            while (byteNumber < 300) {
+            while (byteNumber < Byte.MAX_VALUE) {
 
-                fileOutputStream.write(0);
+                fileOutputStream.write(byteNumber);
+
+                // update mutable state
                 byteNumber++;
+                this.size++;
             }
         } finally {
             fileOutputStream.close();
@@ -96,7 +101,7 @@ public class ObjectManipulationTest {
         final FileInputStream inputStream = new FileInputStream(this.file);
 
         try {
-            systemUnderTest.persistObject(uuid.toString(), 300, inputStream);
+            systemUnderTest.persistObject(uuid.toString(), this.size, inputStream);
 
             final File resultingFile = File.createTempFile("temp", ".tmp");
             resultingFile.deleteOnExit();
