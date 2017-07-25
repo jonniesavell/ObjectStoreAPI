@@ -56,7 +56,12 @@ public class AttributeSerializationTest {
                 new MetaDataServiceImplementation();
         final HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("pants", 5);
-        attributes.put("socks", 3);
+        attributes.put("socks", 3L);
+        attributes.put("pajamas", true);
+        attributes.put("slippers", 0.5f);
+        attributes.put("shin-guards", 0.6d);
+        attributes.put("money", null);
+        attributes.put("slogans", "LOVE BMX!");
 
         final FileOutputStream outputStream = new FileOutputStream(file);
 
@@ -72,7 +77,17 @@ public class AttributeSerializationTest {
                 systemUnderTest.deserializeMetaData(inputStream);
 
         Assert.assertNotNull(result);
-        Assert.assertTrue(result.size() == 2);
+        Assert.assertTrue(result.size() == attributes.size());
+
+        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+            final Object correspondingEntry = result.get(entry.getKey());
+            final boolean equal =
+                    entry.getValue() == null
+                    ? correspondingEntry == null
+                    : entry.getValue().equals(correspondingEntry);
+
+            Assert.assertTrue(equal);
+        }
     }
 
     @Test

@@ -22,7 +22,7 @@ import java.nio.file.attribute.UserDefinedFileAttributeView;
  */
 public class FileAttributesTest {
 
-    @Test
+    //@Test
     public void test() throws Exception {
 
         final File tmpFile = File.createTempFile("temp", ".tmp");

@@ -40,8 +40,28 @@ public class MetaDataServiceImplementation {
         final Schema ratingSchema = SchemaBuilder.record("Attribute")
                 .fields()
                 .name(ATTRIBUTE_NAME).type().stringType().noDefault()
-                .name(ATTRIBUTE_TYPE).type().stringType().noDefault()
-                .name(ATTRIBUTE_VALUE).type().nullable().intType().noDefault()
+                .name(ATTRIBUTE_TYPE).type().unionOf()
+                                            .nullType()
+                                            .and()
+                                            .stringType()
+                                            .endUnion()
+                                            .nullDefault()
+                .name(ATTRIBUTE_VALUE).type().unionOf()
+                                             .nullType()
+                                             .and()
+                                             .booleanType()
+                                             .and()
+                                             .doubleType()
+                                             .and()
+                                             .floatType()
+                                             .and()
+                                             .intType()
+                                             .and()
+                                             .longType()
+                                             .and()
+                                             .stringType()
+                                             .endUnion()
+                                             .nullDefault()
                 .endRecord();
         final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(ratingSchema);
         final DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
@@ -50,10 +70,14 @@ public class MetaDataServiceImplementation {
             dataFileWriter.create(ratingSchema, outputStream);
 
             for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+                final String type =
+                        entry.getValue() == null
+                        ? "null"
+                        : entry.getValue().getClass().getName();
                 final GenericRecordBuilder recordBuilder =
                         new GenericRecordBuilder(ratingSchema)
                                 .set(ATTRIBUTE_NAME, entry.getKey())
-                                .set(ATTRIBUTE_TYPE, entry.getValue().getClass().getName())
+                                .set(ATTRIBUTE_TYPE, type)
                                 .set(ATTRIBUTE_VALUE, entry.getValue());
                 final GenericRecord attributeRecord = recordBuilder.build();
                 dataFileWriter.append(attributeRecord);
@@ -81,6 +105,7 @@ public class MetaDataServiceImplementation {
             final Collection<Schema.Field> schemaFields = schema.getFields();
 
             for (final Schema.Field schemaField : schemaFields) {
+// TODO: this is handy during the learning phase but this is not helpful in production.
                 System.out.println("name        : " + schemaField.name());
                 System.out.println("schema-type : " + schemaField.schema().getType());
                 System.out.println("position    : " + schemaField.pos());
@@ -89,8 +114,18 @@ public class MetaDataServiceImplementation {
             while (dataReader.hasNext()) {
 
                 final GenericRecord attributeData = dataReader.next();
+                final Object value = attributeData.get(ATTRIBUTE_VALUE);
+                final Object finalValue;
+
+                if (value instanceof Utf8) {
+                    Utf8 realValue = (Utf8) value;
+                    finalValue = realValue.toString();
+                } else {
+                    finalValue = value;
+                }
+
                 final Utf8 utf8 = (Utf8) attributeData.get(ATTRIBUTE_NAME);
-                result.put(utf8.toString(), attributeData.get(ATTRIBUTE_VALUE));
+                result.put(utf8.toString(), finalValue);
             }
 
             return result;
