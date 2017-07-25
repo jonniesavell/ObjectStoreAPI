@@ -11,7 +11,6 @@ import com.indigententerprises.services.StreamTransferService;
 import com.indigententerprises.services.SystemException;
 
 import com.indigententerprises.domain.FileData;
-import com.indigententerprises.domain.FileMetaData;
 import com.indigententerprises.domain.Handle;
 
 import com.amazonaws.auth.AWSCredentials;
