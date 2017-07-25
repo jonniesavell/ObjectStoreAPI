@@ -29,7 +29,6 @@ public class MetaDataServiceImplementation {
     private static final String ATTRIBUTE_VALUE = "attributeValue";
 
     /**
-     * attributes must be non-null
      * outputStream must be non-null and must correspond to a live stream
      *   that was truncated prior to invocation
      */
