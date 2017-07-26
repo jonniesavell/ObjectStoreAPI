@@ -8,16 +8,18 @@
         <groupId>com.indigententerprises.apis</groupId>
         <artifactId>object-storage-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.indigententerprises.apis</groupId>
-    <artifactId>object-storage-components</artifactId>
+    <artifactId>object-storage-services-objects</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>files</module>
-        <module>streams</module>
-        <module>objects</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.indigententerprises.apis</groupId>
+            <artifactId>object-storage-domain-objects</artifactId>
+        </dependency>
+    </dependencies>
 </project>

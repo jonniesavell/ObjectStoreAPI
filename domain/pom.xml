@@ -13,8 +13,10 @@
     <groupId>com.indigententerprises.apis</groupId>
     <artifactId>object-storage-domain</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <dependencies>
-    </dependencies>
+    <modules>
+        <module>files</module>
+        <module>objects</module>
+    </modules>
 </project>

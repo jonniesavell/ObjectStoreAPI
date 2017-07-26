@@ -1,17 +1,17 @@
 package com.indigententerprises.applications;
 
-import com.indigententerprises.components.FileInvestigativeServiceImplementation;
-import com.indigententerprises.components.MetaDataServiceImplementation;
-import com.indigententerprises.components.ObjectService;
-import com.indigententerprises.components.ObjectServiceImplementation;
-import com.indigententerprises.components.TrivialStreamTransferService;
+import com.indigententerprises.components.files.FileInvestigativeServiceImplementation;
+import com.indigententerprises.components.objects.MetaDataServiceImplementation;
+import com.indigententerprises.components.objects.ObjectService;
+import com.indigententerprises.components.objects.ObjectServiceImplementation;
+import com.indigententerprises.components.streams.TrivialStreamTransferService;
 
-import com.indigententerprises.services.FileInvestigativeService;
-import com.indigententerprises.services.StreamTransferService;
-import com.indigententerprises.services.SystemException;
+import com.indigententerprises.services.common.SystemException;
+import com.indigententerprises.services.files.FileInvestigativeService;
+import com.indigententerprises.services.streams.StreamTransferService;
 
-import com.indigententerprises.domain.FileData;
-import com.indigententerprises.domain.Handle;
+import com.indigententerprises.domain.files.FileData;
+import com.indigententerprises.domain.objects.Handle;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;

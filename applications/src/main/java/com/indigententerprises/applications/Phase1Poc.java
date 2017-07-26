@@ -1,12 +1,15 @@
 package com.indigententerprises.applications;
 
-import com.indigententerprises.components.FileInvestigativeServiceImplementation;
-import com.indigententerprises.components.TrivialStreamTransferService;
-import com.indigententerprises.services.FileInvestigativeService;
-import com.indigententerprises.services.StreamTransferService;
+import com.indigententerprises.components.files.FileInvestigativeServiceImplementation;
 
-import com.indigententerprises.domain.FileData;
-import com.indigententerprises.domain.FileMetaData;
+import com.indigententerprises.components.streams.TrivialStreamTransferService;
+
+import com.indigententerprises.services.files.FileInvestigativeService;
+
+import com.indigententerprises.services.streams.StreamTransferService;
+
+import com.indigententerprises.domain.files.FileData;
+import com.indigententerprises.domain.files.FileMetaData;
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.auth.AWSCredentials;
