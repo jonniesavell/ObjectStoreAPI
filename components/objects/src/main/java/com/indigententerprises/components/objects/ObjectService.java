@@ -21,12 +21,12 @@ import java.util.UUID;
 public class ObjectService {
 
     private final String SUFFIX = "__METADATA";
-    private final ObjectServiceImplementation primitiveObjectService;
-    private final MetaDataServiceImplementation primitiveMetaDataService;
+    private final com.indigententerprises.services.objects.ObjectService primitiveObjectService;
+    private final com.indigententerprises.services.objects.MetaDataService primitiveMetaDataService;
 
     public ObjectService(
-            final ObjectServiceImplementation primitiveObjectService,
-            final MetaDataServiceImplementation primitiveMetaDataService
+            final com.indigententerprises.services.objects.ObjectService primitiveObjectService,
+            final com.indigententerprises.services.objects.MetaDataService primitiveMetaDataService
     ) {
         this.primitiveObjectService = primitiveObjectService;
         this.primitiveMetaDataService = primitiveMetaDataService;

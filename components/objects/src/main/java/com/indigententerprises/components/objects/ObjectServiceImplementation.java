@@ -1,5 +1,7 @@
 package com.indigententerprises.components.objects;
 
+import com.indigententerprises.services.objects.ObjectService;
+
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.AmazonClientException;
 
@@ -23,7 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.NoSuchElementException;
 
-public class ObjectServiceImplementation {
+public class ObjectServiceImplementation implements ObjectService {
 
     private final AWSCredentialsProvider credentialsProvider;
     private final String targetBucketName;
@@ -49,7 +51,6 @@ public class ObjectServiceImplementation {
                     throw new RuntimeException("bucket " + this.targetBucketName + " not found");
                 } else {
                     final AWSCredentials credentials = credentialsProvider.getCredentials();
-                    System.out.println("credentials: (" + credentials.getAWSAccessKeyId() + ", " + credentials.getAWSSecretKey() + ")");
                 }
             } finally {
                 s3Client.shutdown();
@@ -61,6 +62,7 @@ public class ObjectServiceImplementation {
         }
     }
 
+    @Override
     public synchronized void persistObject(
             final String id,
             final int size,
@@ -89,6 +91,7 @@ public class ObjectServiceImplementation {
         }
     }
 
+    @Override
     public synchronized void retrieveObject(
             final String id,
             final OutputStream outputStream) throws NoSuchElementException, SystemException {

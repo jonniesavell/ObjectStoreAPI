@@ -51,7 +51,7 @@ public class Phase2Poc {
                     final AWSCredentials credentials =
                             credentialsProvider.getCredentials();
 
-                    System.out.println("credentials: (" + credentials.getAWSAccessKeyId() + ", " + credentials.getAWSSecretKey() + ")");
+                    // System.out.println("credentials: (" + credentials.getAWSAccessKeyId() + ", " + credentials.getAWSSecretKey() + ")");
 
                     final boolean bucketExists =
                             s3Client.doesBucketExist(requestedBucketName);
@@ -65,24 +65,22 @@ public class Phase2Poc {
                                 new FileInvestigativeServiceImplementation();
                         final FileData fileData = fileInvestigativeService.investigate(file);
                         final StreamTransferService streamTransferService = new TrivialStreamTransferService();
-                        final ObjectServiceImplementation primitiveObjectService =
+                        final com.indigententerprises.services.objects.ObjectService primitiveObjectService =
                                 new ObjectServiceImplementation(
                                         credentialsProvider,
                                         targetBucketName,
                                         streamTransferService
                                 );
-                        final MetaDataServiceImplementation primitiveMetaDataService =
+                        final com.indigententerprises.services.objects.MetaDataService primitiveMetaDataService =
                                 new MetaDataServiceImplementation();
                         final ObjectService objectService =
                                 new ObjectService(primitiveObjectService, primitiveMetaDataService);
                         final Handle handle;
 
-                        // begin write to S3
                         handle = objectService.storeObjectAndMetaData(
                                 fileData.getInputStream(),
                                 (int) fileData.getFileMetaData().getSize(),
                                 new HashMap<>());
-                        // end
 
                         final FileOutputStream fileOutputStream = new FileOutputStream(file, false);
 
@@ -102,10 +100,8 @@ public class Phase2Poc {
                         final FileOutputStream fileOutputStream2 = new FileOutputStream(file);
 
                         try {
-                            // begin read from S3
                             Map<String, Object> metadata =
                                     objectService.retrieveObjectAndMetaData(handle, fileOutputStream2);
-                            // end
 
                             System.out.println(metadata);
                         } finally {
