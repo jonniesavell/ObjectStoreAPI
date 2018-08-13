@@ -1,5 +1,7 @@
 package com.indigententerprises.components.objects;
 
+import com.indigententerprises.services.objects.MetaDataService;
+
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.file.DataFileStream;
@@ -22,7 +24,7 @@ import java.util.Map;
 /**
  * @author jonniesavell
  */
-public class MetaDataServiceImplementation {
+public class MetaDataServiceImplementation implements MetaDataService {
 
     private static final String ATTRIBUTE_NAME = "attributeName";
     private static final String ATTRIBUTE_TYPE = "attributeType";
@@ -32,6 +34,7 @@ public class MetaDataServiceImplementation {
      * outputStream must be non-null and must correspond to a live stream
      *   that was truncated prior to invocation
      */
+    @Override
     public void serializeMetaData(
             final OutputStream outputStream,
             final Map<String, Object> attributes) throws IOException {
@@ -90,6 +93,7 @@ public class MetaDataServiceImplementation {
      * inputStream must be non-null and must correspond to a live stream
      *   populated with data that this service recognizes
      */
+    @Override
     public Map<String, Object> deserializeMetaData(final InputStream inputStream) throws IOException {
 
         final Map<String, Object> result = new HashMap<>();
